@@ -13,6 +13,7 @@ namespace SampleBot
         /// <summary>
         /// POST: api/Messages
         /// Receive a message from a user and reply to it
+        /// Test cooment
         /// </summary>
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
