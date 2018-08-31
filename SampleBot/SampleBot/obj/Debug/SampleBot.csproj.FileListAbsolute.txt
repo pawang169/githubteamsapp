@@ -1,0 +1,45 @@
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Bot Application.dll.config
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Bot Application.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Bot Application.pdb
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Autofac.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Chronic.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Microsoft.Bot.Builder.Autofac.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Microsoft.Bot.Builder.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Microsoft.Bot.Connector.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Microsoft.IdentityModel.Protocol.Extensions.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Microsoft.Rest.ClientRuntime.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Microsoft.WindowsAzure.Configuration.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Newtonsoft.Json.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\System.Net.Http.Formatting.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\System.Web.Http.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\System.Web.Http.WebHost.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Autofac.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Microsoft.Bot.Builder.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Microsoft.Bot.Builder.Autofac.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Microsoft.Bot.Connector.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Microsoft.IdentityModel.Protocol.Extensions.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Microsoft.WindowsAzure.Configuration.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Newtonsoft.Json.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\System.IdentityModel.Tokens.Jwt.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\System.Net.Http.Formatting.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\System.Web.Http.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\System.Web.Http.WebHost.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\ar\Microsoft.Bot.Builder.resources.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\cs\Microsoft.Bot.Builder.resources.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\de-dE\Microsoft.Bot.Builder.resources.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\en\Microsoft.Bot.Builder.resources.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\es\Microsoft.Bot.Builder.resources.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\fa\Microsoft.Bot.Builder.resources.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\fr\Microsoft.Bot.Builder.resources.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\ja\Microsoft.Bot.Builder.resources.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\ru\Microsoft.Bot.Builder.resources.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\zh-hans\Microsoft.Bot.Builder.resources.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\obj\Debug\SampleBot.csprojResolveAssemblyReference.cache
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\obj\Debug\Bot Application.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\obj\Debug\Bot Application.pdb
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Microsoft.Bot.Connector.Teams.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Polly.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Microsoft.Bot.Connector.Teams.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Polly.pdb
+C:\Users\v-pogusa\source\repos\githubteamsapp\SampleBot\SampleBot\bin\Polly.xml

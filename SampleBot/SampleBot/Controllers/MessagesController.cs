@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
+using Microsoft.Bot.Connector.Teams;
+
 
 namespace SampleBot
 {
@@ -13,13 +15,23 @@ namespace SampleBot
         /// <summary>
         /// POST: api/Messages
         /// Receive a message from a user and reply to it
-        /// Test cooment
         /// </summary>
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
             if (activity.Type == ActivityTypes.Message)
             {
                 await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
+            }
+            else if (activity.Type == ActivityTypes.Invoke)
+            {
+                if (activity.IsComposeExtensionQuery())
+                {
+                    // Determine the response object to reply with
+                    var invokeResponse = new MessagingExtension(activity).CreateResponse();
+
+                    // Return the response
+                    return Request.CreateResponse(HttpStatusCode.OK, invokeResponse);
+                }
             }
             else
             {
