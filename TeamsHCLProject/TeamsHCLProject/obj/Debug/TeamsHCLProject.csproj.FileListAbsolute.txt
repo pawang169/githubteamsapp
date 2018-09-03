@@ -43,3 +43,4 @@ C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bi
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.Bot.Connector.Teams.xml
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Polly.pdb
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Polly.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\RestSharp.dll

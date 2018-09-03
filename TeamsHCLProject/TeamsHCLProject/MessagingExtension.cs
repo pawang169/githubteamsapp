@@ -6,6 +6,8 @@ using System.Web;
 using Microsoft.Bot.Connector.Teams.Models;
 using Newtonsoft.Json.Linq;
 using Microsoft.Bot.Connector.Teams;
+using TeamsHCLProject.Service;
+using TeamsHCLProject.Data;
 
 namespace TeamsHCLProject
 {
@@ -63,10 +65,22 @@ namespace TeamsHCLProject
                     else if (query.CommandId == "Repos")
                     {
 
+                        GitHubService service = new GitHubService();
+                        Repository obj = new Repository();
+                        obj =   service.GetRepository();
+      
+                        string repo = "";
+                        int i = 1;
+                        foreach (Node rep in obj.data.viewer.repositories.nodes)
+                            {
+                            repo += i.ToString() + " " + rep.name + "</br>";
+                            i++;
+                        }
 
-                    card.Title = "Currenty no Repos found.";
+                        card.Title = "User Repository detail";
+                        card.Subtitle = repo;
 
-                       
+
 
                     }
 
@@ -74,9 +88,10 @@ namespace TeamsHCLProject
                     {
 
 
-                    card.Title = "Currenty no issues found.";
+                    card.Title = "Currenty no Issue record";
 
-                   
+
+
 
                     }
 

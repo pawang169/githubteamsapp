@@ -13,7 +13,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
-
+using GraphQL.Client;
 
 namespace ConsoleApplication1
 {
@@ -48,14 +48,40 @@ namespace ConsoleApplication1
         public static async Task<string> GetUserData()
         {
 
+
+//            var client = new GraphQLClient("https://mygraphql.endpoint");
+//            var query = @"
+//    query($id: String) { 
+//        someObject(id: $id) {
+//            id
+//            name
+//        }
+//    }
+//";
+
+
+
             var client = new RestClient("https://api.github.com/graphql");
+
             var request = new RestRequest(Method.POST);
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Authorization", "Bearer 17c03b21ecc77b2a5328ebb1ba32165d47dee6d5");
-            request.AddParameter("graphql", "{\"query\": \"{ viewer { login name id } }\"}", ParameterType.RequestBody);
+            int limits = 100;
+            request.AddParameter("graphql", "{\"query\": \"{ viewer {    name     repositories(last:" + limits + ") {       nodes {         name  }  }   } }\"}", ParameterType.RequestBody);
+          //  request.AddParameter("graphql", "{\"query\": \"{ viewer { login name id } }\"}", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
+            var json =  response.Content;
+            if (response.StatusCode.ToString() == "OK")
+            {
+            }
+            else
+
+            {
+
+            }
+
             string jsondata = JsonConvert.SerializeObject(response.Content);
 
 
