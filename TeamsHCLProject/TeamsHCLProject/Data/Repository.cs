@@ -5,28 +5,48 @@ using System.Web;
 
 namespace TeamsHCLProject.Data
 {
-    public class Repository
-    {
-        public Data data { get; set; }
-    }
     public class Node
     {
+        public string title { get; set; }
+        public string url { get; set; }
+        public string state { get; set; }
+    }
+
+    public class Edge
+    {
+        public List<Node> node { get; set; }
+    }
+
+    public class Issues
+    {
+        public List<Edge> edges { get; set; }
+    }
+
+    public class Repository
+    {
+        public Issues issues { get; set; }
+
+        public string id { get; set; }
         public string name { get; set; }
-    }
-
-    public class Repositories
-    {
-        public List<Node> nodes { get; set; }
-    }
-
-    public class Viewer
-    {
-        public object name { get; set; }
-        public Repositories repositories { get; set; }
+        public object homepageUrl { get; set; }
+        public string resourcePath { get; set; }
+        public bool isPrivate { get; set; }
+        public DateTime updatedAt { get; set; }
+        public DateTime createdAt { get; set; }
+        public string nameWithOwner { get; set; }
+        public string url { get; set; }
+      //  public Owner owner { get; set; }
     }
 
     public class Data
     {
-        public Viewer viewer { get; set; }
+        public Repository repository { get; set; }
+
+        public ViewerPullRequest viewer { get; set; }
+    }
+
+    public class RepositoryRoot
+    {
+        public Data data { get; set; }
     }
 }

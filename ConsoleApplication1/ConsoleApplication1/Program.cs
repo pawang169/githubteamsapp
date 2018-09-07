@@ -14,24 +14,17 @@ using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
 using GraphQL.Client;
+using static ConsoleApplication1.GraphQLClient;
 
 namespace ConsoleApplication1
 {
+
+   
     class Program
     {
         static void Main(string[] args)
         {
-//            var heroRequest = new GraphQLRequest
-//            {
-//                Query = @"
-//    {
-//      hero {
-//        name
-//      }
-//    }"
-//            };
-//            var graphQLClient = new GraphQL.Client.GraphQLClient("https://api.github.com/graphql");
-//            var graphQLResponse = await graphQLClient.PostAsync(heroRequest);
+            var client1 = new GraphQLClient("https://api.github.com/graphql");
 //            var query = @"
 //    query($id: String) { 
 //        someObject(id: $id) {
@@ -40,8 +33,79 @@ namespace ConsoleApplication1
 //        }
 //    }
 //";
-//            var obj = client.Query(query, new { id = "123" }).Get("someObject");
-              string s = GetUserData().Result;
+            //var query1 = @"query($id: Int!) {
+            //    viewer {
+            //        name
+            //       repositories(last: $id) {
+            //            nodes {
+            //                name
+            //            }
+            //        }
+            //    }
+            //}";
+
+            var query = @"query  {
+                    viewer{
+                        name
+                      repositories(first: 100)
+                      {
+                            nodes
+      {
+                                name
+      }
+                        }
+                    }
+                }";
+
+            var query3 = @"query($headRefName: String!) { 
+                                      viewer { 
+                                      pullRequests (first : 100, headRefName : $headRefName){
+                                        totalCount
+                                        edges {   
+                                          node {
+                                            id
+                                            title
+                                            body
+                                            state
+                                            headRefName
+                                            revertUrl
+                                            url
+                                            bodyText
+                                            repository {
+                                                id
+                                                name
+                                                nameWithOwner
+                                                resourcePath  
+                                                url
+                                                owner{
+                                                  __typename
+                                                  resourcePath
+                                                }
+                                            }
+                                         assignees(first:100)
+                                            {
+                                              totalCount
+                                            }
+                                            comments(first:100)
+                                            {
+                                              totalCount
+                                            }
+                                            headRef{
+                                              name
+                                            }
+                                            headRefName
+                                          }
+                                        }
+                                      }
+                                      }
+                                    }";
+
+
+            string obj = client1.Query(query3, new { headRefName = "composeextension" });
+         //   Console.WriteLine((string)obj.name);
+            Console.ReadLine();
+            //          
+          //  string s = GetUserData().Result;
 
         }
 
@@ -49,15 +113,7 @@ namespace ConsoleApplication1
         {
 
 
-//            var client = new GraphQLClient("https://mygraphql.endpoint");
-//            var query = @"
-//    query($id: String) { 
-//        someObject(id: $id) {
-//            id
-//            name
-//        }
-//    }
-//";
+                   
 
 
 
@@ -69,8 +125,11 @@ namespace ConsoleApplication1
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Authorization", "Bearer 17c03b21ecc77b2a5328ebb1ba32165d47dee6d5");
             int limits = 100;
-            request.AddParameter("graphql", "{\"query\": \"{ viewer {    name     repositories(last:" + limits + ") {       nodes {         name  }  }   } }\"}", ParameterType.RequestBody);
-          //  request.AddParameter("graphql", "{\"query\": \"{ viewer { login name id } }\"}", ParameterType.RequestBody);
+            string uname = "poonam0025";
+            string comp = "HCLSample";
+            request.AddParameter("graphql", "{\"query\": \"{ repository(owner: "+uname +", name: "+comp+") { 	issues    (last:20, state:OPEN) { edge node{ title url} }}   } }\"}", ParameterType.RequestBody);
+            //   request.AddParameter("graphql", "{\"query\": \"{ viewer {    name     repositories(last:" + limits + ") {       nodes {         name  }  }   } }\"}", ParameterType.RequestBody);
+            //  request.AddParameter("graphql", "{\"query\": \"{ viewer { login name id } }\"}", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
             var json =  response.Content;
             if (response.StatusCode.ToString() == "OK")

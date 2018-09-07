@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
 using System.IO;
 using System.Net;
@@ -75,7 +76,7 @@ namespace ConsoleApplication1
         {
             this.url = url;
         }
-        public dynamic Query(string query, object variables)
+        public string Query(string query, object variables)
         {
             var fullQuery = new GraphQLQuery()
             {
@@ -85,47 +86,38 @@ namespace ConsoleApplication1
             string jsonContent = JsonConvert.SerializeObject(fullQuery);
 
             Console.WriteLine(jsonContent);
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/graphql");
-            request.ContentType = "application/json";
+
+            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/graphql");
+            //request.ContentType = "application/json";
+            //ServicePointManager.Expect100Continue = true;
+            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            //request.Headers.Add("Authorization", "Bearer 17c03b21ecc77b2a5328ebb1ba32165d47dee6d5");
+            //request.Method = "POST";
+
+            //UTF8Encoding encoding = new UTF8Encoding();
+            //Byte[] byteArray = encoding.GetBytes(jsonContent.Trim());
+
+            //request.ContentLength = byteArray.Length;
+            //request.ContentType = @"application/json";
+
+
+
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            request.Headers.Add("Authorization", "Bearer 9a2b6d054ee3c1266d4371ec9dc65f9c81243662");
-            request.Method = "POST";
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Authorization", "Bearer b3aa416f2aec93565215b6f3ce8f08cab1bb1f5c");
+            //   int limits = 100;
+            var client = new RestClient("https://api.github.com/graphql");
 
-            UTF8Encoding encoding = new UTF8Encoding();
-            Byte[] byteArray = encoding.GetBytes(jsonContent.Trim());
+            request.AddParameter("graphql", jsonContent, ParameterType.RequestBody);
+            //   request.AddParameter("graphql", "{\"query\": \"{ viewer {    name     repositories(last:" + limits + ") {       nodes {         name  }  }   } }\"}", ParameterType.RequestBody);
+            //  request.AddParameter("graphql", "{\"query\": \"{ viewer { login name id } }\"}", ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
 
-            request.ContentLength = byteArray.Length;
-            request.ContentType = @"application/json";
-
-            using (Stream dataStream = request.GetRequestStream())
-            {
-                dataStream.Write(byteArray, 0, byteArray.Length);
-            }
-            long length = 0;
-            try
-            {
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                {
-                    length = response.ContentLength;
-                    using (Stream responseStream = response.GetResponseStream())
-                    {
-                        StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                        var json = reader.ReadToEnd();
-                        return new GraphQLQueryResult(json);
-                    }
-                }
-            }
-            catch (WebException ex)
-            {
-                WebResponse errorResponse = ex.Response;
-                using (Stream responseStream = errorResponse.GetResponseStream())
-                {
-                    StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
-                    String errorText = reader.ReadToEnd();
-                    Console.WriteLine(errorText);
-                    return new GraphQLQueryResult(null, ex);
-                }
-            }
+            var json = response.Content;
+            return json;
+            
+          
         }
     }
 }

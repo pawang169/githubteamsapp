@@ -5,46 +5,48 @@ using Microsoft.Bot.Connector;
 using TeamsHCLProject.Service;
 using System.Collections.Generic;
 using TeamsHCLProject.Data;
+using Microsoft.Bot.Builder.Luis;
+using Microsoft.Bot.Builder.Luis.Models;
 
 namespace TeamsHCLProject.Dialogs
 {
+    [LuisModel("fde55290-f681-4dc4-9e96-186e92cb89cf", "9566f27b21b04962a90bd7f7a8ba6e15")]
     [Serializable]
-    public class RootDialog : IDialog<object>
+    public class RootDialog : LuisDialog<object>
     {
-        public async Task StartAsync(IDialogContext context)
+        //public async Task StartAsync(IDialogContext context)
+        //{
+        //    await context.PostAsync(GetOptionCard(context));
+        //    context.Wait(OptionResponse);
+        //}
+
+        [LuisIntent("Hi")]
+        public async Task Greetings(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("Please enter GitHub PAT");
-            context.Wait(PATAuthoriztion);
+            await context.PostAsync(GetOptionCard(context));
+            context.Wait(MessageReceived);
+          //  context.Wait(OptionResponse);
+            // context.Wait(PerformRemedyOperation);
+
         }
 
-        private async Task PATAuthoriztion(IDialogContext context, IAwaitable<IMessageActivity> argument)
+        [LuisIntent("PRs")]
+        public async Task PRS(IDialogContext context, LuisResult result)
         {
-            var message = await argument;
-            GitHubService service = new GitHubService();
-            string status = service.ValidateToken(message.Text);
-            if(status == "OK")
-            {
-                Constants.PATToken = message.Text;
-                await context.PostAsync("Token saved.");
-                await context.PostAsync(GetOptionCard(context));
-                context.Wait(OptionResponse);
+            context.Call<object>(new PullRequestDialog(), ChildDialogIsDone);
 
-            }
-            else
-            {
-                await context.PostAsync("Token is not correct.");
-            }
-            //if (message.Text.Trim().ToLower() == "exit")
-            //{
-            //    await context.PostAsync(Constants.AppExit);
-            //    context.Done<object>(new object());
-            //}
-            //else
-            //{
-            //    summary = message.Text;
-            //    await context.PostAsync(GetRemedyPriority(context));
-            //    context.Wait(CreateRemedy);
-            //}
+        }
+
+        [LuisIntent("Issues")]
+        public async Task Issues(IDialogContext context, LuisResult result)
+        {
+            context.Call<object>(new SearchIssueDialog(), ChildDialogIsDone);
+
+        }
+        [LuisIntent("Repository")]
+        public async Task Repository(IDialogContext context, LuisResult result)
+        {
+            context.Call<object>(new RepositoryDetail(), ChildDialogIsDone);
 
         }
 
@@ -52,33 +54,30 @@ namespace TeamsHCLProject.Dialogs
         {
             var reply = context.MakeMessage();
             var message = await argument;
-            if (message.Text.Trim() == "Get Repository")
+            if (message.Text.Trim() == "Get Repository Detail")
             {
-                HeroCard card = new HeroCard();
-                GitHubService service = new GitHubService();
-                Repository obj = new Repository();
-                obj = service.GetRepository();
+                context.Call<object>(new RepositoryDetail(), ChildDialogIsDone);
+            }
 
-                string repo = "";
-                int i = 1;
-                foreach (Node rep in obj.data.viewer.repositories.nodes)
-                {
-                    repo += i.ToString() + " " + rep.name + "</br>";
-                    i++;
-                }
-
-                card.Title = "User Repository detail";
-                card.Subtitle = repo;
-                Attachment attachment = card.ToAttachment();
-                reply.Attachments.Add(attachment);
-                await context.PostAsync(reply);
-               
-                context.Done<object>(new object());
+            else if (message.Text.Trim() == "Search PRs")
+            {
+                context.Call<object>(new PullRequestDialog(), ChildDialogIsDone);
+            }
+            else if (message.Text.Trim() == "Search issues")
+            {
+                context.Call<object>(new SearchIssueDialog(), ChildDialogIsDone);
             }
             else
             {
-                context.Done<object>(new object());
+                await context.PostAsync(GetOptionCard(context));
+                context.Wait(OptionResponse);
             }
+
+        }
+
+        public async Task ChildDialogIsDone(IDialogContext context, IAwaitable<object> result)
+        {
+            context.Wait(MessageReceived);
 
         }
 
@@ -94,7 +93,7 @@ namespace TeamsHCLProject.Dialogs
 
                 Buttons = new List<CardAction> { new CardAction(ActionTypes.ImBack, "Search issues", value: "Search issues"),
                                                new CardAction(ActionTypes.ImBack, "Search PRs", value: "Search PRs"),
-                                               new CardAction(ActionTypes.ImBack, "Get Repository", value: "Get Repository")}
+                                               new CardAction(ActionTypes.ImBack, "Get Repository Detail", value: "Get Repository Detail")}
             };
 
             reply.Attachments = new List<Attachment>();

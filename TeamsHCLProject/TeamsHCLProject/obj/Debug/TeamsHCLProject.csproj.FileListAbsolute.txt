@@ -6,10 +6,13 @@ C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bi
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.Bot.Builder.Autofac.dll
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.Bot.Builder.dll
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.Bot.Connector.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.Bot.Connector.Teams.dll
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.IdentityModel.Protocol.Extensions.dll
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.Rest.ClientRuntime.dll
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.WindowsAzure.Configuration.dll
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Newtonsoft.Json.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Polly.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\RestSharp.dll
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\System.Net.Http.Formatting.dll
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\System.Web.Http.dll
@@ -18,9 +21,12 @@ C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bi
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.Bot.Builder.xml
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.Bot.Builder.Autofac.xml
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.Bot.Connector.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.Bot.Connector.Teams.xml
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.IdentityModel.Protocol.Extensions.xml
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.WindowsAzure.Configuration.xml
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Newtonsoft.Json.xml
+C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Polly.pdb
+C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Polly.xml
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\System.IdentityModel.Tokens.Jwt.xml
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\System.Net.Http.Formatting.xml
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\System.Web.Http.xml
@@ -35,12 +41,7 @@ C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bi
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\ja\Microsoft.Bot.Builder.resources.dll
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\ru\Microsoft.Bot.Builder.resources.dll
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\zh-hans\Microsoft.Bot.Builder.resources.dll
-C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\obj\Debug\TeamsHCLProject.csprojResolveAssemblyReference.cache
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\obj\Debug\Bot Application.dll
 C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\obj\Debug\Bot Application.pdb
-C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.Bot.Connector.Teams.dll
-C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Polly.dll
-C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Microsoft.Bot.Connector.Teams.xml
-C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Polly.pdb
-C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\Polly.xml
-C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\RestSharp.dll
+C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\obj\Debug\TeamsHCLProject.csprojResolveAssemblyReference.cache
+C:\Users\v-pogusa\source\repos\githubteamsapp\TeamsHCLProject\TeamsHCLProject\bin\AdaptiveCards.dll
