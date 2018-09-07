@@ -87,7 +87,7 @@ namespace TeamsHCLProject.Data
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Authorization", "Bearer 17c03b21ecc77b2a5328ebb1ba32165d47dee6d5");
+            request.AddHeader("Authorization", "Bearer b3aa416f2aec93565215b6f3ce8f08cab1bb1f5c");
             //   int limits = 100;
             var client = new RestClient("https://api.github.com/graphql");
 
