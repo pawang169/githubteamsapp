@@ -11,16 +11,6 @@ namespace TeamsHCLProject.Data
         public string resourcePath { get; set; }
     }
 
-    //public class Repository
-    //{
-    //    public string id { get; set; }
-    //    public string name { get; set; }
-    //    public string nameWithOwner { get; set; }
-    //    public string resourcePath { get; set; }
-    //    public string url { get; set; }
-    //    public Owner owner { get; set; }
-    //}
-
     public class Assignees
     {
         public int totalCount { get; set; }
@@ -56,7 +46,6 @@ namespace TeamsHCLProject.Data
 
     public class PullRequestRepository
     {
-        //public Issues issues { get; set; }
 
         public string id { get; set; }
         public string name { get; set; }
@@ -67,7 +56,6 @@ namespace TeamsHCLProject.Data
         public DateTime createdAt { get; set; }
         public string nameWithOwner { get; set; }
         public string url { get; set; }
-        //  public Owner owner { get; set; }
     }
 
 
@@ -90,16 +78,9 @@ namespace TeamsHCLProject.Data
     }
     public class PullRequestData
     {
-     //   public Repository repository { get; set; }
 
         public ViewerPullRequest viewer { get; set; }
     }
-
-
-    //public class PullRequestData
-    //{
-    //    public Viewer viewer { get; set; }
-    //}
 
     public class RootPullRequest
     {

@@ -6,7 +6,6 @@ using System.Web;
 using Microsoft.Bot.Connector.Teams.Models;
 using Newtonsoft.Json.Linq;
 using Microsoft.Bot.Connector.Teams;
-using TeamsHCLProject.Service;
 using TeamsHCLProject.Data;
 using AdaptiveCards;
 
@@ -68,10 +67,10 @@ namespace TeamsHCLProject
                         {
                             headRefName = titleParam.Value.ToString().ToLower();
                         }
+
                         var query3 = @"query($headRefName: String!) { 
                                       viewer { 
                                       pullRequests (first : 100, headRefName : $headRefName){
-                                        totalCount
                                         edges {   
                                           node {
                                             id
@@ -81,28 +80,8 @@ namespace TeamsHCLProject
                                             headRefName
                                             revertUrl
                                             url
-                                            bodyText
                                             repository {
-                                                id
-                                                name
                                                 nameWithOwner
-                                                resourcePath  
-                                                url
-                                                owner{
-                                                  __typename
-                                                  resourcePath
-                                                }
-                                            }
-                                         assignees(first:100)
-                                            {
-                                              totalCount
-                                            }
-                                            comments(first:100)
-                                            {
-                                              totalCount
-                                            }
-                                            headRef{
-                                              name
                                             }
                                             headRefName
                                           }
@@ -114,13 +93,7 @@ namespace TeamsHCLProject
                         string data = client.Query(query3, new { headRefName = headRefName });
                         RootPullRequest obj = Newtonsoft.Json.JsonConvert.DeserializeObject<RootPullRequest>(data);
 
-                        //var card = GetUpdatedAdaptiveCard(obj);
-                        //Attachment attachment = new Microsoft.Bot.Connector.Attachment()
-                        //{
-                        //    ContentType = AdaptiveCard.ContentType,
-                        //    Content = card,
-
-                        //};
+                   
                         if (obj.data.viewer.pullRequests.edges.Count == 0)
                         {
                             text = "No  pull request exists.";
@@ -137,14 +110,11 @@ namespace TeamsHCLProject
                                 + "<b>RevertUrl  :</b>" + obj.data.viewer.pullRequests.edges[0].node.revertUrl + "</br>"
                                 + "<b>Repository :</b>" + obj.data.viewer.pullRequests.edges[0].node.repository.nameWithOwner,
                                 Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: obj.data.viewer.pullRequests.edges[0].node.url) }
-                            
-
 
                         };
                             composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
                         }
 
-                        // composeExtensionAttachment = attachment.ToComposeExtensionAttachment();
                         if (text != "")
                         {
                             results.Text = text;
@@ -190,8 +160,7 @@ namespace TeamsHCLProject
                             HeroCard card = new HeroCard
                             {
                                 Title = repository,
-                                Text = "<b>Id : </b> " + obj.data + "</br>"
-                                                    //+ "<b>Homepage Url : </b> " + obj.data.repository.url+ "</br>"
+                                Text = "<b>Id : </b> " + obj.data.repository.id + "</br>"
                                                     + "<b>Resource path : </b> " + obj.data.repository.resourcePath + "</br>"
                                                     + "<b>IsPrivate : </b> " + obj.data.repository.isPrivate + "</br>"
                                                     + "<b>CreatedAt : </b> " + Convert.ToDateTime(obj.data.repository.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
@@ -203,17 +172,6 @@ namespace TeamsHCLProject
 
                             composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
                         }
-
-                        //string repo = "";
-                        //int i = 1;
-                        //foreach (Node rep in obj.data.viewer.repositories.nodes)
-                        //    {
-                        //    repo += i.ToString() + " " + rep.name + "</br>";
-                        //    i++;
-                        //}
-
-                        //card.Title = "User Repository detail";
-                        //card.Subtitle = repo;
 
                         if (text != "")
                         {
@@ -245,10 +203,8 @@ namespace TeamsHCLProject
                                           title 
                                           url 
                                           state
-body
-createdAt
-
-        
+                                          body
+                                          createdAt
                                         } 
                                       } 
                                     } 
@@ -272,45 +228,21 @@ createdAt
                                 card = new HeroCard
                                 {
                                     Title = "<b>" +repositorydata.data.repository.issues.edges[i].node.title +"</b>",
-                                    Text =
-                                         //"<b>Title         :</b>" + repositorydata.data.repository.issues.edges[i].node.title + "</br>"
-                                         "<b>Description     :</b>" + repositorydata.data.repository.issues.edges[i].node.body + "</br>"
-                                        + "<b>Created At  :</b>" + Convert.ToDateTime(repositorydata.data.repository.issues.edges[i].node.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
-                                        + "<b>State :</b>" + repositorydata.data.repository.issues.edges[i].node.state,
+                                    Text = "<b>Description     :</b>" + repositorydata.data.repository.issues.edges[i].node.body + "</br>"
+                                           + "<b>Created At  :</b>" + Convert.ToDateTime(repositorydata.data.repository.issues.edges[i].node.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                                           + "<b>State :</b>" + repositorydata.data.repository.issues.edges[i].node.state,
                                     Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: repositorydata.data.repository.issues.edges[i].node.url) }
 
                                 };
 
-                              //  composeExtensionAttachment = Herocard.ToAttachment().ToComposeExtensionAttachment();
                                 composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
                                 results.Attachments.Add(composeExtensionAttachment);
 
                             }
 
-                         //   composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
                         }
 
-
-
-
                     }
-
-                    // Generate cards for the response.
-
-                    //var results = new ComposeExtensionResult()
-                    //{
-                    //    AttachmentLayout = "list",
-                    //    Type = "result",
-                    //    Attachments = new List<ComposeExtensionAttachment>(),
-                    //};
-
-                 
-                    //   var card = CardHelper.CreatePatientCardForCE(sHeaderText, pos.Name, sPatientId, sWaitTime, sColor);
-                    //   var previewCard = CardHelper.CreatePatientCardForCE("Team card", pos.Name, sPatientId, sWaitTime, sColor, false);
-
-                   
-                  
-             
 
                     response = new ComposeExtensionResponse()
                     {
@@ -327,48 +259,5 @@ createdAt
 
         }
 
-
-
-        //private static AdaptiveCard GetUpdatedAdaptiveCard(RootPullRequest obj)
-        //{
-
-        //    List<AdaptiveElement> items = new List<AdaptiveElement>()
-        //    {
-        //     new AdaptiveColumnSet()
-        //                     {
-
-        //                         Columns = new List<AdaptiveColumn>()
-        //                         {
-        //                             new AdaptiveColumn()
-        //                             {
-        //                                 Items = new List<AdaptiveElement>()
-        //                                 {
-        //                                     new AdaptiveTextBlock(){Text="Title: " + obj.data.viewer.pullRequests.edges[0].node.headRefName, Color= AdaptiveTextColor.Dark,Wrap=true, Weight=AdaptiveTextWeight.Bolder,Size=AdaptiveTextSize.Large},
-        //                                 }
-        //                             }
-        //                             // new AdaptiveColumn()
-        //                             //{
-        //                             //    Items = new List<AdaptiveElement>()
-        //                             //    {
-        //                             //        new AdaptiveTextBlock(){Text="Resolved",IsSubtle= true}
-        //                             //    }
-        //                             //}
-        //                         }
-        //                     }
-        //    };
-        //    items.Add(new AdaptiveTextBlock() { Text = "**Id:**             " + obj.data.viewer.pullRequests.edges[0].node.id , Wrap = true });
-        //    items.Add(new AdaptiveTextBlock() { Text = "**Body:**          " + obj.data.viewer.pullRequests.edges[0].node.body, Wrap = true });
-        //    items.Add(new AdaptiveTextBlock() { Text = "**State:** " + obj.data.viewer.pullRequests.edges[0].node.state, Wrap = true });
-        //    items.Add(new AdaptiveTextBlock() { Text = "**RevertUrl:**         " + obj.data.viewer.pullRequests.edges[0].node.revertUrl, Wrap = true });
-        //    items.Add(new AdaptiveTextBlock() { Text = "**Url:**     " + obj.data.viewer.pullRequests.edges[0].node.url, Wrap = true });
-        //    items.Add(new AdaptiveTextBlock() { Text = "Repository:** " + obj.data.viewer.pullRequests.edges[0].node.repository.nameWithOwner, Wrap = true });
-        //    var card = new AdaptiveCard()
-        //    {
-        //        Body = items
-
-        //    };
-
-        //    return card;
-        //}
     }
 }

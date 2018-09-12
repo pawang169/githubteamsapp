@@ -148,7 +148,6 @@
     </Compile>
     <Compile Include="MessagingExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service\GitHubService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

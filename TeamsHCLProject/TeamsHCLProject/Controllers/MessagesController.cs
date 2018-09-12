@@ -74,7 +74,7 @@ namespace TeamsHCLProject
             if (obj.Repository == "--Select option--")
             {
                 
-                replyActivity.Text = "Please select repository";
+                replyActivity.Text = "Please select Repository";
             }
             else
             {
@@ -108,8 +108,8 @@ namespace TeamsHCLProject
                                       edges { 
                                         node { 
                                           title 
-createdAt
-body
+                                          createdAt
+                                          body
                                           url 
                                           state
         
@@ -145,145 +145,23 @@ body
                         card = new HeroCard
                         {
                             Title = repositorydata.data.repository.issues.edges[i].node.title,
-                            Text =
-                            //"<b>Title         :</b>" + repositorydata.data.repository.issues.edges[i].node.title + "</br>"
-                                 "<b>Description     :</b>" + repositorydata.data.repository.issues.edges[i].node.body + "</br>"
-                                + "<b>Created At  :</b>" + Convert.ToDateTime(repositorydata.data.repository.issues.edges[i].node.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
-                                + "<b>State :</b>" + repositorydata.data.repository.issues.edges[i].node.state,
+                            Text = "<b>Description     :</b>" + repositorydata.data.repository.issues.edges[i].node.body + "</br>"
+                                   + "<b>Created At  :</b>" + Convert.ToDateTime(repositorydata.data.repository.issues.edges[i].node.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                                   + "<b>State :</b>" + repositorydata.data.repository.issues.edges[i].node.state,
                             Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: repositorydata.data.repository.issues.edges[i].node.url) }
 
                         };
 
                         replyActivity.Attachments.Add(card.ToAttachment());
 
-
-
                     }
-                    //AdaptiveCard card = SearchAdaptiveCard(repositorydata, obj);
-                    //Microsoft.Bot.Connector.Attachment attachment = new Microsoft.Bot.Connector.Attachment()
-                    //{
-                    //    ContentType = AdaptiveCard.ContentType,
-                    //    Content = card,
-                    //    Name = "ABCD"
-                    //};
-                    //replyActivity.Attachments.Add(attachment);
-                    //  }
-
-
 
                 }
                     }
             return replyActivity;
         }
 
-        private static AdaptiveCard SearchAdaptiveCard(RepositoryDetailRoot obj, TeamsSubmit data)
-        {
-            List<AdaptiveFact> fact = new List<AdaptiveFact>();
-            AdaptiveFact factObj;
-            string reportTitle = "Repository" + data.Repository.ToUpper() + "issues detail";
-
-
-            factObj = new AdaptiveFact();
-            factObj.Value = data.State;
-            factObj.Title = "State:";
-            fact.Add(factObj);
-
-            List<AdaptiveElement> bodyAdaptiveElement = new List<AdaptiveElement>() {
-                 new AdaptiveTextBlock() { Text = reportTitle, HorizontalAlignment = AdaptiveHorizontalAlignment.Center, Weight = AdaptiveTextWeight.Bolder, Size = AdaptiveTextSize.Medium },
-                  new AdaptiveFactSet()
-                  {
-                      Facts = fact
-                  },
-                   new AdaptiveColumnSet()
-            ,
-                    new AdaptiveColumnSet()
-                   {
-                       Spacing = AdaptiveSpacing.Medium,
-                       Separator = true,
-                       Columns = new List<AdaptiveColumn>()
-                                {
-                                       new AdaptiveColumn()
-                                     {
-                                           Width = "10",
-                                         Items = new List<AdaptiveElement>()
-                                         {
-                                            new AdaptiveTextBlock { Text = "Title", Weight = AdaptiveTextWeight.Bolder, IsSubtle = true
-                                         }
-
-                                     }
-                                     },
-                                     new AdaptiveColumn()
-                                     {
-                                          Width = "42",
-                                                           Items = new List<AdaptiveElement>()
-                                         {
-                                            new AdaptiveTextBlock { Text = "Url", Weight = AdaptiveTextWeight.Bolder, IsSubtle = true
-                                            }
-
-                                         }
-                                     },
-                                     new AdaptiveColumn()
-                                     {
-                                          Width = "9",
-                                                           Items = new List<AdaptiveElement>()
-                                         {
-                                            new AdaptiveTextBlock { Text = "State", Wrap = true, Weight = AdaptiveTextWeight.Bolder, IsSubtle = true
-                                            }
-                                         }
-                                    }
-                                 }
-                   }
-
-                };
-
-            //for (int i = 0; i < obj.data.repository.issues.edges[0].node.Count; i++)
-            //{
-                bodyAdaptiveElement.Add(
-                    new AdaptiveColumnSet()
-                    {
-                        Spacing = AdaptiveSpacing.Medium,
-                        Separator = true,
-                        Columns = new List<AdaptiveColumn>()
-                                 {
-                                       new AdaptiveColumn()
-                                     {
-                                           Width = "10",
-                                               Items = new List<AdaptiveElement>()
-                                         {
-                                            new AdaptiveTextBlock { Text = obj.data.repository.issues.edges[0].node.title, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
-                                            }
-                                         }
-                                     },
-                                     new AdaptiveColumn()
-                                     {
-                                          Width = "42",
-                                               Items = new List<AdaptiveElement>()
-                                         {
-                                            new AdaptiveTextBlock { Text =  obj.data.repository.issues.edges[0].node.url, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
-                                            }
-                                         }
-                                     },
-                                     new AdaptiveColumn()
-                                     {
-                                          Width = "9",
-                                               Items = new List<AdaptiveElement>()
-                                         {
-                                            new AdaptiveTextBlock { Text =  obj.data.repository.issues.edges[0].node.state, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
-                                            }
-                                         }
-                                     }
-                                 }
-                    });
-          //  }
-
-            AdaptiveCard card = new AdaptiveCard()
-            {
-                Body = bodyAdaptiveElement
-            };
-
-            return card;
-
-        }
+       
         private Activity HandleSystemMessage(Activity message)
         {
             if (message.Type == ActivityTypes.DeleteUserData)

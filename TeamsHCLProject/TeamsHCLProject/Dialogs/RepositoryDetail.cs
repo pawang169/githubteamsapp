@@ -18,16 +18,15 @@ namespace TeamsHCLProject.Dialogs
         {
             var reply = context.MakeMessage();
             HeroCard card = new HeroCard();
-            //Repository obj = new Repository();
             var query = @"query  {
                     viewer{
                         name
                       repositories(first: 100)
                       {
-                            nodes
-      {
-                                name
-      }
+                        nodes
+                        {
+                           name
+                        }
                         }
                     }
                 }";
@@ -77,13 +76,12 @@ namespace TeamsHCLProject.Dialogs
             HeroCard card = new HeroCard
             {
                 Title = message.Text,
-                Text = "<b>Id : </b> " + obj.data + "</br>"
-                                                 //+ "<b>Homepage Url : </b> " + obj.data.repository.url + "</br>"
-                                                 + "<b>Resource path : </b> " + obj.data.repository.resourcePath + "</br>"
-                                                 + "<b>IsPrivate : </b> " + obj.data.repository.isPrivate + "</br>"
-                                                 + "<b>CreatedAt : </b> " + Convert.ToDateTime(obj.data.repository.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
-                                                 + "<b>UpdatedAt : </b> " + Convert.ToDateTime(obj.data.repository.updatedAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
-                                                 + "<b>Name with Owner : </b> " + obj.data.repository.nameWithOwner,
+                Text = "<b>Id : </b> " + obj.data.repository.id + "</br>"
+                      + "<b>Resource path : </b> " + obj.data.repository.resourcePath + "</br>"
+                      + "<b>IsPrivate : </b> " + obj.data.repository.isPrivate + "</br>"
+                      + "<b>CreatedAt : </b> " + Convert.ToDateTime(obj.data.repository.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                      + "<b>UpdatedAt : </b> " + Convert.ToDateTime(obj.data.repository.updatedAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                      + "<b>Name with Owner : </b> " + obj.data.repository.nameWithOwner,
                 Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: obj.data.repository.url) }
 
             };

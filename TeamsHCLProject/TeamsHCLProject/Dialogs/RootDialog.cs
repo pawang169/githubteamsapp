@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
-using TeamsHCLProject.Service;
 using System.Collections.Generic;
 using TeamsHCLProject.Data;
 using Microsoft.Bot.Builder.Luis;
@@ -14,11 +13,6 @@ namespace TeamsHCLProject.Dialogs
     [Serializable]
     public class RootDialog : LuisDialog<object>
     {
-        //public async Task StartAsync(IDialogContext context)
-        //{
-        //    await context.PostAsync(GetOptionCard(context));
-        //    context.Wait(OptionResponse);
-        //}
 
         [LuisIntent("Hi")]
         public async Task Greetings(IDialogContext context, LuisResult result)
@@ -26,7 +20,6 @@ namespace TeamsHCLProject.Dialogs
             await context.PostAsync(GetOptionCard(context));
            // context.Wait(MessageReceived);
             context.Wait(OptionResponse);
-            //context.Wait(PerformRemedyOperation);
 
         }
 

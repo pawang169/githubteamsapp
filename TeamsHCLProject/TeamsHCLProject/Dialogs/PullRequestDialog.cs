@@ -25,7 +25,6 @@ namespace TeamsHCLProject.Dialogs
             var query3 = @"query($headRefName: String!) { 
                                       viewer { 
                                       pullRequests (first : 100, headRefName : $headRefName){
-                                        totalCount
                                         edges {   
                                           node {
                                             id
@@ -35,28 +34,8 @@ namespace TeamsHCLProject.Dialogs
                                             headRefName
                                             revertUrl
                                             url
-                                            bodyText
                                             repository {
-                                                id
-                                                name
                                                 nameWithOwner
-                                                resourcePath  
-                                                url
-                                                owner{
-                                                  __typename
-                                                  resourcePath
-                                                }
-                                            }
-                                         assignees(first:100)
-                                            {
-                                              totalCount
-                                            }
-                                            comments(first:100)
-                                            {
-                                              totalCount
-                                            }
-                                            headRef{
-                                              name
                                             }
                                             headRefName
                                           }
@@ -83,15 +62,11 @@ namespace TeamsHCLProject.Dialogs
                           +"<b>Repository :</b>" + obj.data.viewer.pullRequests.edges[0].node.repository.nameWithOwner,
                     Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: obj.data.viewer.pullRequests.edges[0].node.url) }
 
-
-
-
                 };
                 reply.Attachments = new List<Attachment>();
                 reply.Attachments.Add(card.ToAttachment());
             }
             
-         
             await context.PostAsync(reply);
             context.Done<object>(new object());
         }
