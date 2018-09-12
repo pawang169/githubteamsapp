@@ -25,17 +25,15 @@ namespace TeamsHCLProject
            
             if (activity.Type == ActivityTypes.Message)
             {
-
                 if (activity.Value != null)
                 {
                     return await PerformSubmit(activity);
                 }
                 await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
-                
+
             }
             else if (activity.Type == ActivityTypes.Invoke)
             {
-           
 
                if (activity.IsComposeExtensionQuery())
                 {
@@ -84,8 +82,8 @@ namespace TeamsHCLProject
                 var client = new GraphQLClient();
                 if (   obj.State =="ALL")
                 {
-                    var query = @"query(owner:String!,$name:String!) {
-                                repository(owner : $episode, name: $name)
+                    var query = @"query($owner:String!,$name:String!) {
+                                repository(owner : $owner, name: $name)
                                   {
                                     issues(first:20) { 
                                       edges { 
@@ -110,6 +108,8 @@ namespace TeamsHCLProject
                                       edges { 
                                         node { 
                                           title 
+createdAt
+body
                                           url 
                                           state
         
@@ -121,31 +121,62 @@ namespace TeamsHCLProject
                     data = client.Query(query, new { owner = "poonam0025", name = obj.Repository, states = obj.State });
 
                 }
-                RepositoryRoot repositorydata = Newtonsoft.Json.JsonConvert.DeserializeObject<RepositoryRoot>(data);
+                RepositoryDetailRoot repositorydata = new RepositoryDetailRoot();
+                try
+                {
+                    repositorydata = Newtonsoft.Json.JsonConvert.DeserializeObject<RepositoryDetailRoot>(data);
+                }
+                catch(Exception EX)
+                {
+
+                }
+
                 if (repositorydata.data.repository.issues.edges.Count == 0)
                 {
                     replyActivity.Text = "No issue found under this repository";
                 }
                 else
                 {
-                    AdaptiveCard card = SearchAdaptiveCard(repositorydata, obj);
-                    Microsoft.Bot.Connector.Attachment attachment = new Microsoft.Bot.Connector.Attachment()
+                    HeroCard card = new HeroCard();
+                    replyActivity.Attachments = new List<Attachment>();
+                    replyActivity.Text = "Below are the issue detail of " + obj.Repository;
+                    for (int i = 0; i < repositorydata.data.repository.issues.edges.Count; i++)
                     {
-                        ContentType = AdaptiveCard.ContentType,
-                        Content = card,
-                        Name = "ABCD"
-                    };
-                    replyActivity.Attachments.Add(attachment);
+                        card = new HeroCard
+                        {
+                            Title = repositorydata.data.repository.issues.edges[i].node.title,
+                            Text =
+                            //"<b>Title         :</b>" + repositorydata.data.repository.issues.edges[i].node.title + "</br>"
+                                 "<b>Description     :</b>" + repositorydata.data.repository.issues.edges[i].node.body + "</br>"
+                                + "<b>Created At  :</b>" + Convert.ToDateTime(repositorydata.data.repository.issues.edges[i].node.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                                + "<b>State :</b>" + repositorydata.data.repository.issues.edges[i].node.state,
+                            Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: repositorydata.data.repository.issues.edges[i].node.url) }
+
+                        };
+
+                        replyActivity.Attachments.Add(card.ToAttachment());
+
+
+
+                    }
+                    //AdaptiveCard card = SearchAdaptiveCard(repositorydata, obj);
+                    //Microsoft.Bot.Connector.Attachment attachment = new Microsoft.Bot.Connector.Attachment()
+                    //{
+                    //    ContentType = AdaptiveCard.ContentType,
+                    //    Content = card,
+                    //    Name = "ABCD"
+                    //};
+                    //replyActivity.Attachments.Add(attachment);
+                    //  }
+
+
+
                 }
-              
-
-              
-
-            }
+                    }
             return replyActivity;
         }
 
-        private static AdaptiveCard SearchAdaptiveCard(RepositoryRoot obj, TeamsSubmit data)
+        private static AdaptiveCard SearchAdaptiveCard(RepositoryDetailRoot obj, TeamsSubmit data)
         {
             List<AdaptiveFact> fact = new List<AdaptiveFact>();
             AdaptiveFact factObj;
@@ -205,8 +236,8 @@ namespace TeamsHCLProject
 
                 };
 
-            for (int i = 0; i < obj.data.repository.issues.edges[0].node.Count; i++)
-            {
+            //for (int i = 0; i < obj.data.repository.issues.edges[0].node.Count; i++)
+            //{
                 bodyAdaptiveElement.Add(
                     new AdaptiveColumnSet()
                     {
@@ -219,7 +250,7 @@ namespace TeamsHCLProject
                                            Width = "10",
                                                Items = new List<AdaptiveElement>()
                                          {
-                                            new AdaptiveTextBlock { Text = obj.data.repository.issues.edges[0].node[i].title, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
+                                            new AdaptiveTextBlock { Text = obj.data.repository.issues.edges[0].node.title, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
                                             }
                                          }
                                      },
@@ -228,7 +259,7 @@ namespace TeamsHCLProject
                                           Width = "42",
                                                Items = new List<AdaptiveElement>()
                                          {
-                                            new AdaptiveTextBlock { Text =  obj.data.repository.issues.edges[0].node[i].url, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
+                                            new AdaptiveTextBlock { Text =  obj.data.repository.issues.edges[0].node.url, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
                                             }
                                          }
                                      },
@@ -237,13 +268,13 @@ namespace TeamsHCLProject
                                           Width = "9",
                                                Items = new List<AdaptiveElement>()
                                          {
-                                            new AdaptiveTextBlock { Text =  obj.data.repository.issues.edges[0].node[i].state, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
+                                            new AdaptiveTextBlock { Text =  obj.data.repository.issues.edges[0].node.state, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
                                             }
                                          }
                                      }
                                  }
                     });
-            }
+          //  }
 
             AdaptiveCard card = new AdaptiveCard()
             {

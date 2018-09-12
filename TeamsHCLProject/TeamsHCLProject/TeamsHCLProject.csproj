@@ -137,6 +137,7 @@
     <Compile Include="Data\GraphQLClient.cs" />
     <Compile Include="Data\PullRequest.cs" />
     <Compile Include="Data\Repository.cs" />
+    <Compile Include="Data\RepositoryDetail.cs" />
     <Compile Include="Data\TeamsSubmit.cs" />
     <Compile Include="Dialogs\PullRequestDialog.cs" />
     <Compile Include="Dialogs\RepositoryDetail.cs" />

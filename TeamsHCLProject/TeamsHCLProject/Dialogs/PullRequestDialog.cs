@@ -76,12 +76,13 @@ namespace TeamsHCLProject.Dialogs
                 HeroCard card = new HeroCard
                 {
                     Title = obj.data.viewer.pullRequests.edges[0].node.headRefName,
-                    Text = "<b>Id : </b> " + obj.data.viewer.pullRequests.edges[0].node.id + "</br>"
-                            + "<b>Body : </b> " + obj.data.viewer.pullRequests.edges[0].node.body + "</br>"
-                            + "<b>State : </b> " + obj.data.viewer.pullRequests.edges[0].node.state + "</br>"
-                          + "<b>RevertUrl : </b> " + obj.data.viewer.pullRequests.edges[0].node.revertUrl + "</br>"
-                          + "<b>Url : </b> " + obj.data.viewer.pullRequests.edges[0].node.url + "</br>"
-                          + "<b>Repository : </b> " + obj.data.viewer.pullRequests.edges[0].node.repository.nameWithOwner
+                    Text = "<b>Id         :</b>" + obj.data.viewer.pullRequests.edges[0].node.id + "</br>"
+                          +"<b>Body       :</b>" + obj.data.viewer.pullRequests.edges[0].node.body + "</br>"
+                          +"<b>State      :</b>" + obj.data.viewer.pullRequests.edges[0].node.state + "</br>"
+                          +"<b>RevertUrl  :</b>" + obj.data.viewer.pullRequests.edges[0].node.revertUrl + "</br>"
+                          +"<b>Repository :</b>" + obj.data.viewer.pullRequests.edges[0].node.repository.nameWithOwner,
+                    Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: obj.data.viewer.pullRequests.edges[0].node.url) }
+
 
 
 

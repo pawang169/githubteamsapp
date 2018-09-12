@@ -92,7 +92,7 @@ namespace TeamsHCLProject.Dialogs
             context.Done<object>(new object());
         }
 
-        private static AdaptiveCard SearchAdaptiveCard(RepositoryRoot obj, string search, string repository)
+        private static AdaptiveCard SearchAdaptiveCard(RepositoryDetailRoot obj, string search, string repository)
         {
             List<AdaptiveFact> fact = new List<AdaptiveFact>();
             AdaptiveFact factObj;
@@ -152,8 +152,8 @@ namespace TeamsHCLProject.Dialogs
 
                 };
 
-            for (int i = 0; i < obj.data.repository.issues.edges[0].node.Count; i++)
-            {
+            //for (int i = 0; i < obj.data.repository.issues.edges[0].node.Count; i++)
+            //{
                 bodyAdaptiveElement.Add(
                     new AdaptiveColumnSet()
                     {
@@ -166,7 +166,7 @@ namespace TeamsHCLProject.Dialogs
                                            Width = "10",
                                                Items = new List<AdaptiveElement>()
                                          {
-                                            new AdaptiveTextBlock { Text = obj.data.repository.issues.edges[0].node[i].title, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
+                                            new AdaptiveTextBlock { Text = obj.data.repository.issues.edges[0].node.title, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
                                             }
                                          }
                                      },
@@ -175,7 +175,7 @@ namespace TeamsHCLProject.Dialogs
                                           Width = "42",
                                                Items = new List<AdaptiveElement>()
                                          {
-                                            new AdaptiveTextBlock { Text =  obj.data.repository.issues.edges[0].node[i].url, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
+                                            new AdaptiveTextBlock { Text =  obj.data.repository.issues.edges[0].node.url, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
                                             }
                                          }
                                      },
@@ -184,13 +184,13 @@ namespace TeamsHCLProject.Dialogs
                                           Width = "9",
                                                Items = new List<AdaptiveElement>()
                                          {
-                                            new AdaptiveTextBlock { Text =  obj.data.repository.issues.edges[0].node[i].state, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
+                                            new AdaptiveTextBlock { Text =  obj.data.repository.issues.edges[0].node.state, Wrap = true, Weight = AdaptiveTextWeight.Default, IsSubtle = true
                                             }
                                          }
                                      }
                                  }
                     });
-            }
+            //}
 
             AdaptiveCard card = new AdaptiveCard()
             {

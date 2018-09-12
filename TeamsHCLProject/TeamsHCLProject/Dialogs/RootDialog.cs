@@ -24,15 +24,15 @@ namespace TeamsHCLProject.Dialogs
         public async Task Greetings(IDialogContext context, LuisResult result)
         {
             await context.PostAsync(GetOptionCard(context));
-            context.Wait(MessageReceived);
-          //  context.Wait(OptionResponse);
-            // context.Wait(PerformRemedyOperation);
+           // context.Wait(MessageReceived);
+            context.Wait(OptionResponse);
+            //context.Wait(PerformRemedyOperation);
 
         }
 
         [LuisIntent("PRs")]
         public async Task PRS(IDialogContext context, LuisResult result)
-        {
+       {
             context.Call<object>(new PullRequestDialog(), ChildDialogIsDone);
 
         }
@@ -88,7 +88,7 @@ namespace TeamsHCLProject.Dialogs
 
             var heroCard = new HeroCard
             {
-                Title = ("Hi "),
+                Title = "Hi Poonam,",
                 Text = "Please select one option",
 
                 Buttons = new List<CardAction> { new CardAction(ActionTypes.ImBack, "Search issues", value: "Search issues"),

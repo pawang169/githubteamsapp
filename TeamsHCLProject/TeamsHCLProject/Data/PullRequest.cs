@@ -47,11 +47,29 @@ namespace TeamsHCLProject.Data
         public string revertUrl { get; set; }
         public string url { get; set; }
         public string bodyText { get; set; }
-        public Repository repository { get; set; }
+        public PullRequestRepository repository { get; set; }
         public Assignees assignees { get; set; }
         public Comments comments { get; set; }
         public HeadRef headRef { get; set; }
     }
+
+
+    public class PullRequestRepository
+    {
+        //public Issues issues { get; set; }
+
+        public string id { get; set; }
+        public string name { get; set; }
+        public object homepageUrl { get; set; }
+        public string resourcePath { get; set; }
+        public bool isPrivate { get; set; }
+        public DateTime updatedAt { get; set; }
+        public DateTime createdAt { get; set; }
+        public string nameWithOwner { get; set; }
+        public string url { get; set; }
+        //  public Owner owner { get; set; }
+    }
+
 
     public class EdgePullRequest
     {
@@ -70,6 +88,13 @@ namespace TeamsHCLProject.Data
 
 
     }
+    public class PullRequestData
+    {
+     //   public Repository repository { get; set; }
+
+        public ViewerPullRequest viewer { get; set; }
+    }
+
 
     //public class PullRequestData
     //{
@@ -78,6 +103,6 @@ namespace TeamsHCLProject.Data
 
     public class RootPullRequest
     {
-        public Data data { get; set; }
+        public PullRequestData data { get; set; }
     }
 }

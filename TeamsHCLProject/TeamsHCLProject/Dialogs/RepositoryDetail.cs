@@ -73,19 +73,18 @@ namespace TeamsHCLProject.Dialogs
                                                         }";
             var client = new GraphQLClient();
             string data = client.Query(query3, new { owner = "poonam0025", name = message.Text });
-            RepositoryRoot obj = Newtonsoft.Json.JsonConvert.DeserializeObject<RepositoryRoot>(data);
-
-
+            RepositoryRootObject obj = Newtonsoft.Json.JsonConvert.DeserializeObject<RepositoryRootObject>(data);
             HeroCard card = new HeroCard
             {
                 Title = message.Text,
                 Text = "<b>Id : </b> " + obj.data + "</br>"
-               + "<b>Homepage Url : </b> " + obj.data.repository.url + "</br>"
-               + "<b>Resource path : </b> " + obj.data.repository.resourcePath + "</br>"
-               + "<b>IsPrivate : </b> " + obj.data.repository.isPrivate + "</br>"
-               + "<b>CreatedAt : </b> " + obj.data.repository.createdAt + "</br>"
-               + "<b>UpdatedAt : </b> " + obj.data.repository.updatedAt + "</br>"
-               + "<b>Name with Owner : </b> " + obj.data.repository.nameWithOwner
+                                                 //+ "<b>Homepage Url : </b> " + obj.data.repository.url + "</br>"
+                                                 + "<b>Resource path : </b> " + obj.data.repository.resourcePath + "</br>"
+                                                 + "<b>IsPrivate : </b> " + obj.data.repository.isPrivate + "</br>"
+                                                 + "<b>CreatedAt : </b> " + Convert.ToDateTime(obj.data.repository.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                                                 + "<b>UpdatedAt : </b> " + Convert.ToDateTime(obj.data.repository.updatedAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                                                 + "<b>Name with Owner : </b> " + obj.data.repository.nameWithOwner,
+                Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: obj.data.repository.url) }
 
             };
             reply.Attachments = new List<Attachment>();

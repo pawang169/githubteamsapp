@@ -43,6 +43,12 @@ namespace TeamsHCLProject
                 ComposeExtensionResponse response = null;
                 ComposeExtensionAttachment composeExtensionAttachment = new ComposeExtensionAttachment();
                 var query = activity.GetComposeExtensionQueryData();
+                var results = new ComposeExtensionResult()
+                {
+                    AttachmentLayout = "list",
+                    Type = "result",
+                    Attachments = new List<ComposeExtensionAttachment>(),
+                };
                 string text = "";
                 //Check to make sure a query was actually made:
                 if (query.CommandId == null || query.Parameters == null)
@@ -121,23 +127,32 @@ namespace TeamsHCLProject
                         }
                         else
                         {
+                           
                             HeroCard card = new HeroCard
                             {
                                 Title = obj.data.viewer.pullRequests.edges[0].node.headRefName,
-                                Text = "<b>Id : </b> " + obj.data.viewer.pullRequests.edges[0].node.id + "</br>"
-                               + "<b>Body : </b> " + obj.data.viewer.pullRequests.edges[0].node.body + "</br>"
-                               + "<b>State : </b> " + obj.data.viewer.pullRequests.edges[0].node.state + "</br>"
-                             + "<b>RevertUrl : </b> " + obj.data.viewer.pullRequests.edges[0].node.revertUrl + "</br>"
-                             + "<b>Url : </b> " + obj.data.viewer.pullRequests.edges[0].node.url + "</br>"
-                             + "<b>Repository : </b> " + obj.data.viewer.pullRequests.edges[0].node.repository.nameWithOwner
+                                Text = "<b>Id         :</b>" + obj.data.viewer.pullRequests.edges[0].node.id + "</br>"
+                                + "<b>Body       :</b>" + obj.data.viewer.pullRequests.edges[0].node.body + "</br>"
+                                + "<b>State      :</b>" + obj.data.viewer.pullRequests.edges[0].node.state + "</br>"
+                                + "<b>RevertUrl  :</b>" + obj.data.viewer.pullRequests.edges[0].node.revertUrl + "</br>"
+                                + "<b>Repository :</b>" + obj.data.viewer.pullRequests.edges[0].node.repository.nameWithOwner,
+                                Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: obj.data.viewer.pullRequests.edges[0].node.url) }
+                            
 
 
-
-                            };
+                        };
                             composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
                         }
-                       
+
                         // composeExtensionAttachment = attachment.ToComposeExtensionAttachment();
+                        if (text != "")
+                        {
+                            results.Text = text;
+                        }
+                        else
+                        {
+                            results.Attachments.Add(composeExtensionAttachment);
+                        }
 
                     }
                     else if (query.CommandId == "Repos")
@@ -159,11 +174,12 @@ namespace TeamsHCLProject
                                                   updatedAt
                                                   createdAt
                                                   nameWithOwner
+                                                  url
                                                             }
                                                         }";
                         var client = new GraphQLClient();
                         string data = client.Query(query3, new { owner = "poonam0025", name = repository });
-                        RepositoryRoot obj = Newtonsoft.Json.JsonConvert.DeserializeObject<RepositoryRoot>(data);
+                        RepositoryRootObject obj = Newtonsoft.Json.JsonConvert.DeserializeObject<RepositoryRootObject>(data);
 
                         if(obj.data.repository == null)
                         {
@@ -175,18 +191,19 @@ namespace TeamsHCLProject
                             {
                                 Title = repository,
                                 Text = "<b>Id : </b> " + obj.data + "</br>"
-                                                    + "<b>Homepage Url : </b> " + obj.data.repository.homepageUrl + "</br>"
+                                                    //+ "<b>Homepage Url : </b> " + obj.data.repository.url+ "</br>"
                                                     + "<b>Resource path : </b> " + obj.data.repository.resourcePath + "</br>"
                                                     + "<b>IsPrivate : </b> " + obj.data.repository.isPrivate + "</br>"
-                                                    + "<b>CreatedAt : </b> " + obj.data.repository.createdAt + "</br>"
-                                                    + "<b>UpdatedAt : </b> " + obj.data.repository.updatedAt + "</br>"
-                                                    + "<b>Name with Owner : </b> " + obj.data.repository.nameWithOwner
+                                                    + "<b>CreatedAt : </b> " + Convert.ToDateTime(obj.data.repository.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                                                    + "<b>UpdatedAt : </b> " + Convert.ToDateTime(obj.data.repository.updatedAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                                                    + "<b>Name with Owner : </b> " + obj.data.repository.nameWithOwner,
+                                Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: obj.data.repository.url) }
 
                             };
 
                             composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
                         }
-                     
+
                         //string repo = "";
                         //int i = 1;
                         //foreach (Node rep in obj.data.viewer.repositories.nodes)
@@ -198,15 +215,80 @@ namespace TeamsHCLProject
                         //card.Title = "User Repository detail";
                         //card.Subtitle = repo;
 
-
+                        if (text != "")
+                        {
+                            results.Text = text;
+                        }
+                        else
+                        {
+                            results.Attachments.Add(composeExtensionAttachment);
+                        }
 
                     }
 
                     else if (query.CommandId == "Issues")
                     {
+                      
 
+                        string repository = "";
+                        var titleParam = query.Parameters?.FirstOrDefault(p => p.Name == "PRs" || p.Name == "Repos" || p.Name == "Issues");
+                        if (titleParam != null)
+                        {
+                            repository = titleParam.Value.ToString().ToLower();
+                        }
+                        var query3 = @"query($owner:String!,$name:String!) {
+                                repository(owner : $owner, name: $name)
+                                  {
+                                    issues(first:20) { 
+                                      edges { 
+                                        node { 
+                                          title 
+                                          url 
+                                          state
+body
+createdAt
 
-                        //   ComposeExtensionAttachment composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
+        
+                                        } 
+                                      } 
+                                    } 
+                                  } 
+                                }";
+                        var client = new GraphQLClient();
+                        string data = client.Query(query3, new { owner = "poonam0025", name = repository });
+                        RepositoryDetailRoot repositorydata = Newtonsoft.Json.JsonConvert.DeserializeObject<RepositoryDetailRoot>(data);
+
+                        if (repositorydata.data.repository.issues.edges.Count == 0)
+                        {
+                            text = "No issue found.";
+                        }
+                        else
+                        {
+
+                          
+                            HeroCard card = new HeroCard();
+                            for (int i = 0; i < repositorydata.data.repository.issues.edges.Count; i++)
+                            {
+                                card = new HeroCard
+                                {
+                                    Title = "<b>" +repositorydata.data.repository.issues.edges[i].node.title +"</b>",
+                                    Text =
+                                         //"<b>Title         :</b>" + repositorydata.data.repository.issues.edges[i].node.title + "</br>"
+                                         "<b>Description     :</b>" + repositorydata.data.repository.issues.edges[i].node.body + "</br>"
+                                        + "<b>Created At  :</b>" + Convert.ToDateTime(repositorydata.data.repository.issues.edges[i].node.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                                        + "<b>State :</b>" + repositorydata.data.repository.issues.edges[i].node.state,
+                                    Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: repositorydata.data.repository.issues.edges[i].node.url) }
+
+                                };
+
+                              //  composeExtensionAttachment = Herocard.ToAttachment().ToComposeExtensionAttachment();
+                                composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
+                                results.Attachments.Add(composeExtensionAttachment);
+
+                            }
+
+                         //   composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
+                        }
 
 
 
@@ -215,25 +297,18 @@ namespace TeamsHCLProject
 
                     // Generate cards for the response.
 
+                    //var results = new ComposeExtensionResult()
+                    //{
+                    //    AttachmentLayout = "list",
+                    //    Type = "result",
+                    //    Attachments = new List<ComposeExtensionAttachment>(),
+                    //};
 
-
-                    var results = new ComposeExtensionResult()
-                    {
-                        AttachmentLayout = "list",
-                        Type = "result",
-                        Attachments = new List<ComposeExtensionAttachment>(),
-                    };
+                 
                     //   var card = CardHelper.CreatePatientCardForCE(sHeaderText, pos.Name, sPatientId, sWaitTime, sColor);
                     //   var previewCard = CardHelper.CreatePatientCardForCE("Team card", pos.Name, sPatientId, sWaitTime, sColor, false);
 
-                    if(text != "")
-                    {
-                        results.Text = text;
-                    }
-                    else
-                    {
-                        results.Attachments.Add(composeExtensionAttachment);
-                    }
+                   
                   
              
 
@@ -251,6 +326,8 @@ namespace TeamsHCLProject
 
 
         }
+
+
 
         //private static AdaptiveCard GetUpdatedAdaptiveCard(RootPullRequest obj)
         //{
