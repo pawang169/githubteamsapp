@@ -132,9 +132,11 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Data\AllRepository.cs" />
+    <Compile Include="Data\Class1.cs" />
     <Compile Include="Data\GraphQLClient.cs" />
     <Compile Include="Data\PullRequest.cs" />
     <Compile Include="Data\Repository.cs" />
+    <Compile Include="Data\TeamsSubmit.cs" />
     <Compile Include="Dialogs\PullRequestDialog.cs" />
     <Compile Include="Dialogs\RootDialog.cs" />
     <Compile Include="Dialogs\SearchIssueDialog.cs" />
