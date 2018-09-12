@@ -11,16 +11,6 @@ namespace TeamsHCLProject.Data
         public string resourcePath { get; set; }
     }
 
-    //public class Repository
-    //{
-    //    public string id { get; set; }
-    //    public string name { get; set; }
-    //    public string nameWithOwner { get; set; }
-    //    public string resourcePath { get; set; }
-    //    public string url { get; set; }
-    //    public Owner owner { get; set; }
-    //}
-
     public class Assignees
     {
         public int totalCount { get; set; }
@@ -36,7 +26,7 @@ namespace TeamsHCLProject.Data
         public string name { get; set; }
     }
 
-    public class Node
+    public class NodePullRequest
     {
         public string id { get; set; }
         public string name { get; set; }
@@ -47,37 +37,53 @@ namespace TeamsHCLProject.Data
         public string revertUrl { get; set; }
         public string url { get; set; }
         public string bodyText { get; set; }
-        public Repository repository { get; set; }
+        public PullRequestRepository repository { get; set; }
         public Assignees assignees { get; set; }
         public Comments comments { get; set; }
         public HeadRef headRef { get; set; }
     }
 
-    public class Edge
+
+    public class PullRequestRepository
     {
-        public Node node { get; set; }
+
+        public string id { get; set; }
+        public string name { get; set; }
+        public object homepageUrl { get; set; }
+        public string resourcePath { get; set; }
+        public bool isPrivate { get; set; }
+        public DateTime updatedAt { get; set; }
+        public DateTime createdAt { get; set; }
+        public string nameWithOwner { get; set; }
+        public string url { get; set; }
+    }
+
+
+    public class EdgePullRequest
+    {
+        public NodePullRequest node { get; set; }
     }
 
     public class PullRequests
     {
         public int totalCount { get; set; }
-        public List<Edge> edges { get; set; }
+        public List<EdgePullRequest> edges { get; set; }
     }
 
-    public class Viewer
+    public class ViewerPullRequest
     {
         public PullRequests pullRequests { get; set; }
 
 
     }
+    public class PullRequestData
+    {
 
-    //public class PullRequestData
-    //{
-    //    public Viewer viewer { get; set; }
-    //}
+        public ViewerPullRequest viewer { get; set; }
+    }
 
     public class RootPullRequest
     {
-        public Data data { get; set; }
+        public PullRequestData data { get; set; }
     }
 }

@@ -9,6 +9,6 @@ namespace TeamsHCLProject.Data
     {
         public string Action { get; set; }
         public string Repository { get; set; }
-        public string IssueTitle { get; set; }
+        public string State { get; set; }
     }
 }

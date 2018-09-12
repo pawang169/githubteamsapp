@@ -38,22 +38,5 @@ namespace TeamsHCLProject.Service
 
         }
 
-        public Repository GetRepository()
-        {
-
-            var client = new RestClient("https://api.github.com/graphql");
-            var request = new RestRequest(Method.POST);
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Authorization", "Bearer " + Constants.PATToken);
-            request.AddParameter("graphql", "{\"query\": \"{ viewer {    name     repositories(last:" + "100" + ") {       nodes {         name  }  }   } }\"}", ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request);
-            Repository obj = Newtonsoft.Json.JsonConvert.DeserializeObject<Repository>(response.Content);
-          
-
-            return obj;
-
-        }
     }
 }
