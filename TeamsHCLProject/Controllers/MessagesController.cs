@@ -5,6 +5,8 @@ using System.Web.Http;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
+using TeamsHCLProject.Data;
+using System;
 
 namespace TeamsHCLProject
 {
@@ -20,8 +22,12 @@ namespace TeamsHCLProject
            
             if (activity.Type == ActivityTypes.Message)
             {
-              
-                    await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
+                if (activity.Value != null)
+                {
+                    return await PerformSubmit(activity);
+                }
+
+                await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
                 
             }
             else if (activity.Type == ActivityTypes.Invoke)
@@ -43,6 +49,18 @@ namespace TeamsHCLProject
             }
             var response = Request.CreateResponse(HttpStatusCode.OK);
             return response;
+        }
+
+
+        private static async Task<HttpResponseMessage> PerformSubmit(Activity activity)
+        {
+            var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+            TeamsSubmit obj = Newtonsoft.Json.JsonConvert.DeserializeObject<TeamsSubmit>(Convert.ToString(activity.Value));
+            Activity replyActivity = activity.CreateReply();
+
+            if (obj.Action == "GetIssueDetail")
+            {
+            }
         }
 
         private Activity HandleSystemMessage(Activity message)

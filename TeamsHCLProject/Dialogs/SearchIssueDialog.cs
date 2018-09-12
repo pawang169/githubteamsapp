@@ -17,8 +17,67 @@ namespace TeamsHCLProject.Dialogs
         public string repository = null;
         public async Task StartAsync(IDialogContext context)
         {
-            await context.PostAsync("Enter repository name");
-            context.Wait(SelectState);
+            var reply = context.MakeMessage();
+            List<AdaptiveChoice> choiceInput = new List<AdaptiveChoice>();
+
+            var query = @"query  {
+                    viewer{
+                        name
+                      repositories(first: 100)
+                      {
+                        nodes
+                      {
+                        name
+                      }
+                        }
+                    }
+                }";
+            var client = new GraphQLClient();
+            string data = client.Query(query, null);
+            AllRepository obj = Newtonsoft.Json.JsonConvert.DeserializeObject<AllRepository>(data);
+            choiceInput.Add(new AdaptiveChoice { Title = "--Select option--", Value = "--Select option--" });
+            foreach (Node rep in obj.data.viewer.repositories.nodes)
+            {
+                choiceInput.Add(new AdaptiveChoice { Title = rep.name, Value = rep.name });
+            }
+
+            AdaptiveCard card = new AdaptiveCard()
+            {
+                Body = new List<AdaptiveElement>()
+                {
+                             new AdaptiveTextBlock(){Text="Search Issue",Weight=AdaptiveTextWeight.Bolder,Size=AdaptiveTextSize.Large,Wrap=true, HorizontalAlignment = AdaptiveHorizontalAlignment.Center},
+                             new AdaptiveTextBlock(){Text="Select Repository" },
+                             new AdaptiveChoiceSetInput(){ Id = "Repository", Style = AdaptiveChoiceInputStyle.Compact,
+                                                    Choices = choiceInput },
+                             new AdaptiveTextBlock(){Text="Enter Issue Title" },
+                new AdaptiveTextInput(){Id = "IssueTitle", Placeholder ="Enter issue title" }
+                },
+
+
+
+
+
+
+                Actions = new List<AdaptiveAction>()
+                        {
+                            new AdaptiveSubmitAction()
+                            {
+                            Title = "Update",
+                            Id = "IssueDetail",
+                            DataJson =  @"{""Action"":""GetIssueDetail""}"
+                            }
+                        }
+            };
+            Microsoft.Bot.Connector.Attachment attachment = new Microsoft.Bot.Connector.Attachment()
+            {
+                ContentType = AdaptiveCard.ContentType,
+                Content = card,
+                Name = "ABCD"
+            };
+
+            reply.Attachments.Add(attachment);
+
+            await context.PostAsync(reply);
         }
 
         private async Task SelectState(IDialogContext context, IAwaitable<IMessageActivity> argument)
