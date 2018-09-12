@@ -25,7 +25,6 @@ namespace TeamsHCLProject.Dialogs
             var query3 = @"query($headRefName: String!) { 
                                       viewer { 
                                       pullRequests (first : 100, headRefName : $headRefName){
-                                        totalCount
                                         edges {   
                                           node {
                                             id
@@ -35,28 +34,8 @@ namespace TeamsHCLProject.Dialogs
                                             headRefName
                                             revertUrl
                                             url
-                                            bodyText
                                             repository {
-                                                id
-                                                name
                                                 nameWithOwner
-                                                resourcePath  
-                                                url
-                                                owner{
-                                                  __typename
-                                                  resourcePath
-                                                }
-                                            }
-                                         assignees(first:100)
-                                            {
-                                              totalCount
-                                            }
-                                            comments(first:100)
-                                            {
-                                              totalCount
-                                            }
-                                            headRef{
-                                              name
                                             }
                                             headRefName
                                           }
@@ -67,21 +46,27 @@ namespace TeamsHCLProject.Dialogs
             var client = new GraphQLClient();
             string data = client.Query(query3, new { headRefName = message.Text });
             RootPullRequest obj = Newtonsoft.Json.JsonConvert.DeserializeObject<RootPullRequest>(data);
-            HeroCard card = new HeroCard
+            if(obj.data.viewer.pullRequests.edges.Count == 0)
             {
-                Title = obj.data.viewer.pullRequests.edges[0].node.headRefName,
-                Text = "<b>Id : </b> " + obj.data.viewer.pullRequests.edges[0].node.id + "</br>"
-                            + "<b>Body : </b> " + obj.data.viewer.pullRequests.edges[0].node.body + "</br>"
-                            + "<b>State : </b> " + obj.data.viewer.pullRequests.edges[0].node.state + "</br>"
-                          + "<b>RevertUrl : </b> " + obj.data.viewer.pullRequests.edges[0].node.revertUrl + "</br>"
-                          + "<b>Url : </b> " + obj.data.viewer.pullRequests.edges[0].node.url + "</br>"
-                          + "<b>Repository : </b> " + obj.data.viewer.pullRequests.edges[0].node.repository.nameWithOwner
+                reply.Text = "No pull request found.";
+            }
+            else
+            {
+                HeroCard card = new HeroCard
+                {
+                    Title = obj.data.viewer.pullRequests.edges[0].node.headRefName,
+                    Text = "<b>Id         :</b>" + obj.data.viewer.pullRequests.edges[0].node.id + "</br>"
+                          +"<b>Body       :</b>" + obj.data.viewer.pullRequests.edges[0].node.body + "</br>"
+                          +"<b>State      :</b>" + obj.data.viewer.pullRequests.edges[0].node.state + "</br>"
+                          +"<b>RevertUrl  :</b>" + obj.data.viewer.pullRequests.edges[0].node.revertUrl + "</br>"
+                          +"<b>Repository :</b>" + obj.data.viewer.pullRequests.edges[0].node.repository.nameWithOwner,
+                    Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: obj.data.viewer.pullRequests.edges[0].node.url) }
 
-
-
-            };
-            reply.Attachments = new List<Attachment>();
-            reply.Attachments.Add(card.ToAttachment());
+                };
+                reply.Attachments = new List<Attachment>();
+                reply.Attachments.Add(card.ToAttachment());
+            }
+            
             await context.PostAsync(reply);
             context.Done<object>(new object());
         }

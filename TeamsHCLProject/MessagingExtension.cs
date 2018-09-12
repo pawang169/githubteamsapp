@@ -6,7 +6,6 @@ using System.Web;
 using Microsoft.Bot.Connector.Teams.Models;
 using Newtonsoft.Json.Linq;
 using Microsoft.Bot.Connector.Teams;
-using TeamsHCLProject.Service;
 using TeamsHCLProject.Data;
 using AdaptiveCards;
 
@@ -43,7 +42,13 @@ namespace TeamsHCLProject
                 ComposeExtensionResponse response = null;
                 ComposeExtensionAttachment composeExtensionAttachment = new ComposeExtensionAttachment();
                 var query = activity.GetComposeExtensionQueryData();
-
+                var results = new ComposeExtensionResult()
+                {
+                    AttachmentLayout = "list",
+                    Type = "result",
+                    Attachments = new List<ComposeExtensionAttachment>(),
+                };
+                string text = "";
                 //Check to make sure a query was actually made:
                 if (query.CommandId == null || query.Parameters == null)
                 {
@@ -54,7 +59,7 @@ namespace TeamsHCLProject
                     // query.Parameters has the parameters sent by client
 
                     string headRefName = "";
-                 
+
                     if (query.CommandId == "PRs")
                     {
                         var titleParam = query.Parameters?.FirstOrDefault(p => p.Name == "PRs" || p.Name == "Repos" || p.Name == "Issues");
@@ -62,10 +67,10 @@ namespace TeamsHCLProject
                         {
                             headRefName = titleParam.Value.ToString().ToLower();
                         }
+
                         var query3 = @"query($headRefName: String!) { 
                                       viewer { 
                                       pullRequests (first : 100, headRefName : $headRefName){
-                                        totalCount
                                         edges {   
                                           node {
                                             id
@@ -75,28 +80,8 @@ namespace TeamsHCLProject
                                             headRefName
                                             revertUrl
                                             url
-                                            bodyText
                                             repository {
-                                                id
-                                                name
                                                 nameWithOwner
-                                                resourcePath  
-                                                url
-                                                owner{
-                                                  __typename
-                                                  resourcePath
-                                                }
-                                            }
-                                         assignees(first:100)
-                                            {
-                                              totalCount
-                                            }
-                                            comments(first:100)
-                                            {
-                                              totalCount
-                                            }
-                                            headRef{
-                                              name
                                             }
                                             headRefName
                                           }
@@ -104,33 +89,40 @@ namespace TeamsHCLProject
                                       }
                                       }
                                     }";
-                        var client = new GraphQLClient(); 
+                        var client = new GraphQLClient();
                         string data = client.Query(query3, new { headRefName = headRefName });
                         RootPullRequest obj = Newtonsoft.Json.JsonConvert.DeserializeObject<RootPullRequest>(data);
-                        
-                         //var card = GetUpdatedAdaptiveCard(obj);
-                         //Attachment attachment = new Microsoft.Bot.Connector.Attachment()
-                         //{
-                         //    ContentType = AdaptiveCard.ContentType,
-                         //    Content = card,
 
-                         //};
-
-                         HeroCard card = new HeroCard
+                   
+                        if (obj.data.viewer.pullRequests.edges.Count == 0)
                         {
-                            Title = obj.data.viewer.pullRequests.edges[0].node.headRefName,
-                            Text = "<b>Id : </b> " + obj.data.viewer.pullRequests.edges[0].node.id + "</br>"
-                            +"<b>Body : </b> " + obj.data.viewer.pullRequests.edges[0].node.body + "</br>"
-                            + "<b>State : </b> " + obj.data.viewer.pullRequests.edges[0].node.state + "</br>"
-                          + "<b>RevertUrl : </b> " + obj.data.viewer.pullRequests.edges[0].node.revertUrl + "</br>"
-                          + "<b>Url : </b> " + obj.data.viewer.pullRequests.edges[0].node.url + "</br>"
-                          + "<b>Repository : </b> " + obj.data.viewer.pullRequests.edges[0].node.repository.nameWithOwner 
-                        
-
+                            text = "No  pull request exists.";
+                        }
+                        else
+                        {
+                           
+                            HeroCard card = new HeroCard
+                            {
+                                Title = obj.data.viewer.pullRequests.edges[0].node.headRefName,
+                                Text = "<b>Id         :</b>" + obj.data.viewer.pullRequests.edges[0].node.id + "</br>"
+                                + "<b>Body       :</b>" + obj.data.viewer.pullRequests.edges[0].node.body + "</br>"
+                                + "<b>State      :</b>" + obj.data.viewer.pullRequests.edges[0].node.state + "</br>"
+                                + "<b>RevertUrl  :</b>" + obj.data.viewer.pullRequests.edges[0].node.revertUrl + "</br>"
+                                + "<b>Repository :</b>" + obj.data.viewer.pullRequests.edges[0].node.repository.nameWithOwner,
+                                Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: obj.data.viewer.pullRequests.edges[0].node.url) }
 
                         };
-                        composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
-                       // composeExtensionAttachment = attachment.ToComposeExtensionAttachment();
+                            composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
+                        }
+
+                        if (text != "")
+                        {
+                            results.Text = text;
+                        }
+                        else
+                        {
+                            results.Attachments.Add(composeExtensionAttachment);
+                        }
 
                     }
                     else if (query.CommandId == "Repos")
@@ -152,66 +144,105 @@ namespace TeamsHCLProject
                                                   updatedAt
                                                   createdAt
                                                   nameWithOwner
+                                                  url
                                                             }
                                                         }";
                         var client = new GraphQLClient();
                         string data = client.Query(query3, new { owner = "poonam0025", name = repository });
-                        RepositoryRoot obj = Newtonsoft.Json.JsonConvert.DeserializeObject<RepositoryRoot>(data);
+                        RepositoryRootObject obj = Newtonsoft.Json.JsonConvert.DeserializeObject<RepositoryRootObject>(data);
 
-
-                        HeroCard card = new HeroCard
+                        if(obj.data.repository == null)
                         {
-                            Title = repository,
-                            Text = "<b>Id : </b> " + obj.data + "</br>"
-                           + "<b>Homepage Url : </b> " + obj.data.repository.homepageUrl + "</br>"
-                           + "<b>Resource path : </b> " + obj.data.repository.resourcePath + "</br>"
-                           + "<b>IsPrivate : </b> " + obj.data.repository.isPrivate + "</br>"
-                           + "<b>CreatedAt : </b> " + obj.data.repository.createdAt + "</br>"
-                           + "<b>UpdatedAt : </b> " + obj.data.repository.updatedAt + "</br>"
-                           + "<b>Name with Owner : </b> " + obj.data.repository.nameWithOwner
+                            text = "No " + repository + "found.";
+                        }
+                        else
+                        {
+                            HeroCard card = new HeroCard
+                            {
+                                Title = repository,
+                                Text = "<b>Id : </b> " + obj.data.repository.id + "</br>"
+                                                    + "<b>Resource path : </b> " + obj.data.repository.resourcePath + "</br>"
+                                                    + "<b>IsPrivate : </b> " + obj.data.repository.isPrivate + "</br>"
+                                                    + "<b>CreatedAt : </b> " + Convert.ToDateTime(obj.data.repository.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                                                    + "<b>UpdatedAt : </b> " + Convert.ToDateTime(obj.data.repository.updatedAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                                                    + "<b>Name with Owner : </b> " + obj.data.repository.nameWithOwner,
+                                Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: obj.data.repository.url) }
 
-                        };
-                        composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
-                        //string repo = "";
-                        //int i = 1;
-                        //foreach (Node rep in obj.data.viewer.repositories.nodes)
-                        //    {
-                        //    repo += i.ToString() + " " + rep.name + "</br>";
-                        //    i++;
-                        //}
+                            };
 
-                        //card.Title = "User Repository detail";
-                        //card.Subtitle = repo;
+                            composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
+                        }
 
-
+                        if (text != "")
+                        {
+                            results.Text = text;
+                        }
+                        else
+                        {
+                            results.Attachments.Add(composeExtensionAttachment);
+                        }
 
                     }
 
                     else if (query.CommandId == "Issues")
                     {
+                      
 
+                        string repository = "";
+                        var titleParam = query.Parameters?.FirstOrDefault(p => p.Name == "PRs" || p.Name == "Repos" || p.Name == "Issues");
+                        if (titleParam != null)
+                        {
+                            repository = titleParam.Value.ToString().ToLower();
+                        }
+                        var query3 = @"query($owner:String!,$name:String!) {
+                                repository(owner : $owner, name: $name)
+                                  {
+                                    issues(first:20) { 
+                                      edges { 
+                                        node { 
+                                          title 
+                                          url 
+                                          state
+                                          body
+                                          createdAt
+                                        } 
+                                      } 
+                                    } 
+                                  } 
+                                }";
+                        var client = new GraphQLClient();
+                        string data = client.Query(query3, new { owner = "poonam0025", name = repository });
+                        RepositoryDetailRoot repositorydata = Newtonsoft.Json.JsonConvert.DeserializeObject<RepositoryDetailRoot>(data);
 
-                    //   ComposeExtensionAttachment composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
+                        if (repositorydata.data.repository.issues.edges.Count == 0)
+                        {
+                            text = "No issue found.";
+                        }
+                        else
+                        {
 
+                          
+                            HeroCard card = new HeroCard();
+                            for (int i = 0; i < repositorydata.data.repository.issues.edges.Count; i++)
+                            {
+                                card = new HeroCard
+                                {
+                                    Title = "<b>" +repositorydata.data.repository.issues.edges[i].node.title +"</b>",
+                                    Text = "<b>Description     :</b>" + repositorydata.data.repository.issues.edges[i].node.body + "</br>"
+                                           + "<b>Created At  :</b>" + Convert.ToDateTime(repositorydata.data.repository.issues.edges[i].node.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                                           + "<b>State :</b>" + repositorydata.data.repository.issues.edges[i].node.state,
+                                    Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: repositorydata.data.repository.issues.edges[i].node.url) }
 
+                                };
 
+                                composeExtensionAttachment = card.ToAttachment().ToComposeExtensionAttachment();
+                                results.Attachments.Add(composeExtensionAttachment);
+
+                            }
+
+                        }
 
                     }
-
-                    // Generate cards for the response.
-
-
-
-                    var results = new ComposeExtensionResult()
-                    {
-                        AttachmentLayout = "list",
-                        Type = "result",
-                        Attachments = new List<ComposeExtensionAttachment>(),
-                    };
-                    //   var card = CardHelper.CreatePatientCardForCE(sHeaderText, pos.Name, sPatientId, sWaitTime, sColor);
-                    //   var previewCard = CardHelper.CreatePatientCardForCE("Team card", pos.Name, sPatientId, sWaitTime, sColor, false);
-                
-                    results.Attachments.Add(composeExtensionAttachment);
 
                     response = new ComposeExtensionResponse()
                     {
@@ -228,46 +259,5 @@ namespace TeamsHCLProject
 
         }
 
-        //private static AdaptiveCard GetUpdatedAdaptiveCard(RootPullRequest obj)
-        //{
-
-        //    List<AdaptiveElement> items = new List<AdaptiveElement>()
-        //    {
-        //     new AdaptiveColumnSet()
-        //                     {
-
-        //                         Columns = new List<AdaptiveColumn>()
-        //                         {
-        //                             new AdaptiveColumn()
-        //                             {
-        //                                 Items = new List<AdaptiveElement>()
-        //                                 {
-        //                                     new AdaptiveTextBlock(){Text="Title: " + obj.data.viewer.pullRequests.edges[0].node.headRefName, Color= AdaptiveTextColor.Dark,Wrap=true, Weight=AdaptiveTextWeight.Bolder,Size=AdaptiveTextSize.Large},
-        //                                 }
-        //                             }
-        //                             // new AdaptiveColumn()
-        //                             //{
-        //                             //    Items = new List<AdaptiveElement>()
-        //                             //    {
-        //                             //        new AdaptiveTextBlock(){Text="Resolved",IsSubtle= true}
-        //                             //    }
-        //                             //}
-        //                         }
-        //                     }
-        //    };
-        //    items.Add(new AdaptiveTextBlock() { Text = "**Id:**             " + obj.data.viewer.pullRequests.edges[0].node.id , Wrap = true });
-        //    items.Add(new AdaptiveTextBlock() { Text = "**Body:**          " + obj.data.viewer.pullRequests.edges[0].node.body, Wrap = true });
-        //    items.Add(new AdaptiveTextBlock() { Text = "**State:** " + obj.data.viewer.pullRequests.edges[0].node.state, Wrap = true });
-        //    items.Add(new AdaptiveTextBlock() { Text = "**RevertUrl:**         " + obj.data.viewer.pullRequests.edges[0].node.revertUrl, Wrap = true });
-        //    items.Add(new AdaptiveTextBlock() { Text = "**Url:**     " + obj.data.viewer.pullRequests.edges[0].node.url, Wrap = true });
-        //    items.Add(new AdaptiveTextBlock() { Text = "Repository:** " + obj.data.viewer.pullRequests.edges[0].node.repository.nameWithOwner, Wrap = true });
-        //    var card = new AdaptiveCard()
-        //    {
-        //        Body = items
-
-        //    };
-
-        //    return card;
-        //}
     }
 }
