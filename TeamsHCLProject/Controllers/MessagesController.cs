@@ -21,6 +21,7 @@ namespace TeamsHCLProject
         /// changing something
         /// </summary>
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
+
         {
            
             if (activity.Type == ActivityTypes.Message)
@@ -80,7 +81,7 @@ namespace TeamsHCLProject
             {
                 string data = "";
                 var client = new GraphQLClient();
-                if (   obj.State =="ALL")
+                if (   obj.State == "--ALL--")
                 {
                     var query = @"query($owner:String!,$name:String!) {
                                 repository(owner : $owner, name: $name)

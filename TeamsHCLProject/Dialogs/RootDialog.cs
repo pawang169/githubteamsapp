@@ -14,6 +14,15 @@ namespace TeamsHCLProject.Dialogs
     public class RootDialog : LuisDialog<object>
     {
 
+        [LuisIntent("None")]
+        public async Task None(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync(GetOptionCard(context));
+            // context.Wait(MessageReceived);
+            context.Wait(OptionResponse);
+
+        }
+
         [LuisIntent("Hi")]
         public async Task Greetings(IDialogContext context, LuisResult result)
         {
@@ -36,7 +45,7 @@ namespace TeamsHCLProject.Dialogs
             context.Call<object>(new SearchIssueDialog(), ChildDialogIsDone);
 
         }
-        [LuisIntent("Repository")]
+        [LuisIntent("repository")]
         public async Task Repository(IDialogContext context, LuisResult result)
         {
             context.Call<object>(new RepositoryDetail(), ChildDialogIsDone);
