@@ -7,6 +7,8 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
 using TeamsHCLProject.Data;
 using System;
+using AdaptiveCards;
+using System.Collections.Generic;
 
 namespace TeamsHCLProject
 {
@@ -15,7 +17,8 @@ namespace TeamsHCLProject
     {
         /// <summary>
         /// POST: api/Messages
-        /// Receive a message from a user and reply to it sdlfjldsjf;lds jfsd f lkjldsjfs;ldfj;lsajfd
+        /// Receive a message from a user and reply to it
+        /// changing something
         /// </summary>
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
@@ -26,13 +29,11 @@ namespace TeamsHCLProject
                 {
                     return await PerformSubmit(activity);
                 }
-
                 await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
-                
+
             }
             else if (activity.Type == ActivityTypes.Invoke)
             {
-           
 
                if (activity.IsComposeExtensionQuery())
                 {
@@ -51,7 +52,6 @@ namespace TeamsHCLProject
             return response;
         }
 
-
         private static async Task<HttpResponseMessage> PerformSubmit(Activity activity)
         {
             var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
@@ -60,9 +60,108 @@ namespace TeamsHCLProject
 
             if (obj.Action == "GetIssueDetail")
             {
+                replyActivity = await SearchData(obj, activity);
+            }
+            await connector.Conversations.ReplyToActivityAsync(replyActivity);
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK);
             }
         }
 
+        private static async Task<Activity> SearchData(TeamsSubmit obj, Activity activity)
+        {
+            Activity replyActivity = activity.CreateReply();
+            if (obj.Repository == "--Select option--")
+            {
+                
+                replyActivity.Text = "Please select Repository";
+            }
+            else
+            {
+                string data = "";
+                var client = new GraphQLClient();
+                if (   obj.State =="ALL")
+                {
+                    var query = @"query($owner:String!,$name:String!) {
+                                repository(owner : $owner, name: $name)
+                                  {
+                                    issues(first:20) { 
+                                      edges { 
+                                        node { 
+                                          title 
+                                          url 
+                                          state
+        
+                                        } 
+                                      } 
+                                    } 
+                                  } 
+                                }";
+                    data = client.Query(query, new { owner = "poonam0025", name = obj.Repository });
+                }
+                else
+                {
+                    var query = @"query($owner:String!,$name:String!, $Issuestate:[IssueState!]) {
+                                repository(owner : $owner, name: $name)
+                                  {
+                                    issues(first:20, states:$Issuestate) { 
+                                      edges { 
+                                        node { 
+                                          title 
+                                          createdAt
+                                          body
+                                          url 
+                                          state
+        
+                                        } 
+                                      } 
+                                    } 
+                                  } 
+                                }";
+                    data = client.Query(query, new { owner = "poonam0025", name = obj.Repository, states = obj.State });
+
+                }
+                RepositoryDetailRoot repositorydata = new RepositoryDetailRoot();
+                try
+                {
+                    repositorydata = Newtonsoft.Json.JsonConvert.DeserializeObject<RepositoryDetailRoot>(data);
+                }
+                catch(Exception EX)
+                {
+
+                }
+
+                if (repositorydata.data.repository.issues.edges.Count == 0)
+                {
+                    replyActivity.Text = "No issue found under this repository";
+                }
+                else
+                {
+                    HeroCard card = new HeroCard();
+                    replyActivity.Attachments = new List<Attachment>();
+                    replyActivity.Text = "Below are the issue detail of " + obj.Repository;
+                    for (int i = 0; i < repositorydata.data.repository.issues.edges.Count; i++)
+                    {
+                        card = new HeroCard
+                        {
+                            Title = repositorydata.data.repository.issues.edges[i].node.title,
+                            Text = "<b>Description     :</b>" + repositorydata.data.repository.issues.edges[i].node.body + "</br>"
+                                   + "<b>Created At  :</b>" + Convert.ToDateTime(repositorydata.data.repository.issues.edges[i].node.createdAt).ToString("dd MMM yyyy hh:mm:ss tt") + "</br>"
+                                   + "<b>State :</b>" + repositorydata.data.repository.issues.edges[i].node.state,
+                            Buttons = new List<CardAction> { new CardAction(ActionTypes.OpenUrl, "More Info", value: repositorydata.data.repository.issues.edges[i].node.url) }
+
+                        };
+
+                        replyActivity.Attachments.Add(card.ToAttachment());
+
+                    }
+
+                }
+                    }
+            return replyActivity;
+        }
+
+       
         private Activity HandleSystemMessage(Activity message)
         {
             if (message.Type == ActivityTypes.DeleteUserData)
