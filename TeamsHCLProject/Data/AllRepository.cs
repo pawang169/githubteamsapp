@@ -5,28 +5,29 @@ using System.Web;
 
 namespace TeamsHCLProject.Data
 {
-    public class AllRepository
-    {
-        public Data1 data { get; set; }
-    }
-    public class Node1
-    {
-        public string name { get; set; }
-    }
+    //public class Node
+    //{
+    //    public string name { get; set; }
+    //}
 
     public class Repositories
     {
-        public List<Node1> nodes { get; set; }
+        public List<Node> nodes { get; set; }
     }
 
-    public class Viewer
+    public class RepositoryViewer
     {
         public object name { get; set; }
         public Repositories repositories { get; set; }
     }
 
-    public class Data1
+    public class RepositoryData
     {
-        public Viewer viewer { get; set; }
+        public RepositoryViewer viewer { get; set; }
+    }
+
+    public class AllRepository
+    {
+        public RepositoryData data { get; set; }
     }
 }
